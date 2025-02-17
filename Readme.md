@@ -14,7 +14,7 @@ enkripsi.
 Algoritma ini setidaknya menggunakan 2 algoritma, yaitu Caesar Cipher, dan Luhn Algorithm,
 serta tambahan 1 algoritma buatan saya sendiri yang "terinspirasi" dari mesin enigma.
 ### Dokumentasi
-Info lebih lengkap silahkan cek dokumentasi di [Wiki](https://github.com/LuthfiMC269/AE-Algorithm/wiki/)
+Info lebih lengkap silahkan cek dokumentasi di [Wiki.](https://github.com/LuthfiMC269/AE-Algorithm/wiki/) \
 iya. belom diisi. sabar.
 
 
