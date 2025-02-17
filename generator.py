@@ -10,8 +10,13 @@ def luhn_checksum(number):
     return sum(digits) % 10
 
 def generate_luhn_number():
-    # Generate 15 random digits with the first digit not being 0
-    random_number = str(random.randint(1, 9)) + ''.join(str(random.randint(0, 9)) for _ in range(14))
+    while True:
+        # Generate 15 random digits with the first digit not being 0 and no zeros
+        random_number = str(random.randint(1, 9)) + ''.join(str(random.randint(1, 9)) for _ in range(14))
+
+        # Pastikan tidak ada angka 0
+        if '0' not in random_number:
+            break
 
     # Calculate the check digit
     check_digit = (10 - luhn_checksum(random_number + '0')) % 10
