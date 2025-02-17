@@ -1,4 +1,4 @@
-def atbash(convertto): #Convert input text jadi atbash cipher text
+def atbash(convertto): #Convert input text menggunakan atbash algorithm
     result = ""
     for char in convertto:
         if char.isalpha():
@@ -8,6 +8,8 @@ def atbash(convertto): #Convert input text jadi atbash cipher text
                 result += chr(122 - (ord(char) - 97))
         elif char.isdigit():
             result += chr(57 - (ord(char) - 48))
+        elif char.isspace():
+            result += chr(95) #known bugs, spasi kadang ga kerender benar, sementara pakai underscore (_)
         else:
             result += char
     return result
@@ -42,18 +44,17 @@ def checkkey(keyinput: int): #Validasi input key, sesuai sama yg ketentuan atau 
         print("Kunci ditolak! hanya menerima 16 digit kunci")
         return None, None
 
-def coder(keyinput, textinput):
-    r1_key , r2_key = checkkey(keyinput)
+def encoder(keyinput, textinput):
+    r1_key , r2_key = checkkey(keyinput) #ngecek validity kunci
     try:
         for i, j in zip(range(15), r2_key):
             r2_key[i] = r2_key[i] * (-1)
     except TypeError:
         print("CODE INVALID! Process Stopped")
     else:
-        print("Valid r1_key: "+ str(r1_key)+"\n"+"Valid r2_key: "+ str(r2_key))
+        pass
 
     atbashtext = list(atbash(textinput)) #convert atbash text jadi list per character
-    # print("Atbash Text:" +atbash(textinput))
     ciphertext = []
     printable_range = list(range(32, 127)) #range untuk Printable ASCII CODE
     printable_length = len(printable_range)
@@ -80,6 +81,47 @@ def coder(keyinput, textinput):
     return ''.join(ciphertext)
 
 
-kunci = 1562347319345834 #PlaceHolder Key
-huruf = "01234 56789"
-print("Ciphered Text: "+ coder(kunci, huruf))
+def decoder(keyinput, cipherinput):
+    r1_key , r2_key = checkkey(keyinput) #ngecek validity kunci
+    try:
+        for i, j in zip(range(15), r1_key):
+            r1_key[i] = r1_key[i] * 1
+    except TypeError:
+        print("CODE INVALID! Process Stopped")
+    else:
+        pass
+
+    decodedtext = []
+    for i , char in enumerate(cipherinput):# nyari tau step r1 terakhir waktu encoding
+        r1_index = i % 15
+        r2_index = (i + r1_key[r1_index]) % 15 # nyari index r2 berdasarkan posisi dari r1_key[r1_index]
+        #print(r1_key[r1_index], r2_key[r2_index], cipherinput[i]) #Ngecek setiap pasangan value r1r2 dan input[i]
+        char = chr(ord(cipherinput[i])+r2_key[r2_index])
+        char = chr(ord(char)-r1_key[r1_index])
+        decodedtext.append(char)
+    decodedtext = ''.join(decodedtext)
+    plaintext = atbash(decodedtext)
+    return plaintext
+
+def main():
+    # Example usage:
+    kunci = 1562347319345834  # Example Key
+    huruf = ("Sudah seminggu ku makan telur, telur ceplok dadar dan omelete")  # Example Text
+
+    print("Ingin Encrypt atau Decrypt?")
+    input1 = input("1 untuk Encrypt, 2 untuk Decrypt")
+    if input1 == "1":
+        print("Masukkan Kunci khusus (Bisa generate di file generator.py)")
+        kunci = input("Simpan baik baik kode ini!")
+        checkkey(kunci)
+        huruf = input("Masukkan huruf untuk di Encrypt")
+        encodedtext = encoder(kunci, huruf)
+        print("Ciphered Text: " + encodedtext)
+    elif input1 == "2":
+        print("Masukan Kunci khusus yang dipakai saat generate encoded text")
+        kunci = input()
+        checkkey(kunci)
+        huruf = input("Masukkan huruf untuk di Decrypt")
+        print("Ciphered Text: " + decoder(kunci, huruf))
+
+main()
