@@ -8,8 +8,9 @@ def atbash(convertto): #Convert input text menggunakan atbash algorithm
                 result += chr(122 - (ord(char) - 97))
         elif char.isdigit():
             result += chr(57 - (ord(char) - 48))
-        elif char.isspace():
-            result += chr(95) #known bugs, spasi kadang ga kerender benar, sementara pakai underscore (_)
+        #elif char.isspace():
+            #result += chr(32) #known bugs, spasi kadang ga kerender benar, sementara pakai underscore (_)
+            #fixed, check on decoder section
         else:
             result += char
     return result
@@ -57,6 +58,7 @@ def encoder(keyinput, textinput):
     atbashtext = list(atbash(textinput)) #convert atbash text jadi list per character
     ciphertext = []
     printable_range = list(range(32, 127)) #range untuk Printable ASCII CODE
+    #printable_range.append(0)
     printable_length = len(printable_range)
     for i, char in enumerate(atbashtext):
         # Geser maju r1_key
@@ -98,7 +100,12 @@ def decoder(keyinput, cipherinput):
         #print(r1_key[r1_index], r2_key[r2_index], cipherinput[i]) #Ngecek setiap pasangan value r1r2 dan input[i]
         char = chr(ord(cipherinput[i])+r2_key[r2_index])
         char = chr(ord(char)-r1_key[r1_index])
-        decodedtext.append(char)
+        if char == chr(127):
+            #pass
+            decodedtext.append(" ")
+        else:
+            decodedtext.append(char)
+        #print(ord(char))
     decodedtext = ''.join(decodedtext)
     plaintext = atbash(decodedtext)
     return plaintext
@@ -125,3 +132,4 @@ def main():
         print("Ciphered Text: " + decoder(kunci, huruf))
 
 main()
+pause = input()
